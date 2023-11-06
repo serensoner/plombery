@@ -83,6 +83,7 @@ def register_pipeline(
         description=description,
         params=params,
         triggers=triggers or [],
+        save_output=save_output
     )
 
     _app.register_pipeline(pipeline)
