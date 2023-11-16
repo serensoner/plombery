@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from plombery.constants import MANUAL_TRIGGER_ID
 from plombery.exceptions import InvalidDataPath
-from plombery.logger import get_logger
+import logging
 from plombery.notifications import notification_manager
 from plombery.utils import run_all_coroutines
 from plombery.websocket import manager
@@ -95,7 +95,7 @@ async def run(
     pipeline_token = pipeline_context.set(pipeline)
     run_token = run_context.set(pipeline_run)
 
-    logger = get_logger()
+    logger = logging.getLogger('plombery')
 
     logger.info(
         "Executing pipeline `%s` #%d via trigger `%s`",
