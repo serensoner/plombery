@@ -2,6 +2,7 @@ import logging
 
 from plombery.logger.formatter import JsonFormatter
 from plombery.logger.web_socket_handler import WebSocketHandler
+from logging import StreamHandler
 from plombery.orchestrator.data_storage import get_logs_filename
 from plombery.pipeline.context import task_context, run_context, pipeline_context
 
@@ -26,8 +27,11 @@ def get_logger() -> logging.Logger:
     json_handler = logging.FileHandler(filename)
     json_handler.setFormatter(json_formatter)
 
-    # websocket_handler = WebSocketHandler(pipeline_run.id)
-    # websocket_handler.setFormatter(json_formatter)
+    websocket_handler = WebSocketHandler(pipeline_run.id)
+    websocket_handler.setFormatter(json_formatter)
+
+    streamhandler = StreamHandler()
+    streamhandler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
     # Create a logger that's unique for each pipeline run
     # and not simply for each pipeline, otherwise successive
@@ -53,5 +57,6 @@ def get_logger() -> logging.Logger:
     if not logger.handlers:
         logger.addHandler(json_handler)
         # logger.addHandler(websocket_handler)
+        logger.addHandler(streamhandler)
 
     return logger
