@@ -97,12 +97,12 @@ async def run(
 
     logger = get_logger()
 
-    logger.info(
-        "Executing pipeline `%s` #%d via trigger `%s`",
-        pipeline.id,
-        pipeline_run.id,
-        trigger.id if trigger else MANUAL_TRIGGER_ID,
-    )
+    # logger.info(
+    #     "Executing pipeline `%s` #%d via trigger `%s`",
+    #     pipeline.id,
+    #     pipeline_run.id,
+    #     trigger.id if trigger else MANUAL_TRIGGER_ID,
+    # )
 
     pipeline_params: Optional[BaseModel] = None
 
@@ -131,6 +131,7 @@ async def run(
             task_run.status = PipelineRunStatus.FAILED
         finally:
             task_run.duration = (utcnow() - task_start_time).total_seconds() * 1000
+            logger.info(f'Executed task {task.id} in {task_run.duration:.0f}ms, status = {task_run.status.value}')
 
             try:
                 if pipeline.save_output:
