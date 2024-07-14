@@ -24,39 +24,19 @@ def get_logger() -> logging.Logger:
 
     json_formatter = JsonFormatter(pipeline=pipeline.id, task=task.id if task else None)
 
-    json_handler = logging.FileHandler(filename)
-    json_handler.setFormatter(json_formatter)
-
-    websocket_handler = WebSocketHandler(pipeline_run.id)
-    websocket_handler.setFormatter(json_formatter)
-
     streamhandler = StreamHandler()
     streamhandler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
-    # Create a logger that's unique for each pipeline run
-    # and not simply for each pipeline, otherwise successive
-    # runs will always use the same log file because
-    # `json_handler` wouldn't be added the logger, because,
-    # in turn, `logger` is always the same instance.
-    #
-    # This fixes issue #131:
-    #   https://github.com/lucafaggianelli/plombery/issues/131
     logger_name = f"plombery.{pipeline_run.id}"
 
-    # On top of that, create 2 different loggers: 1 for pipelines and
-    # 1 for tasks and be sure they're not in a parent-child
-    # relationships otherwise it will generate double logs
     if task:
         logger_name += f"-{task.id}"
 
     logger = logging.getLogger(logger_name)
+    logger.propagate = False
     logger.setLevel(logging.DEBUG)
 
-    # The `getLogger` returns a previously created logger
-    # if any, so be sure not to re-add the same handlers again
     if not logger.handlers:
-        logger.addHandler(json_handler)
-        # logger.addHandler(websocket_handler)
         logger.addHandler(streamhandler)
 
     return logger
