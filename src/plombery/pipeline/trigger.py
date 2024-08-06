@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from apscheduler.triggers.base import BaseTrigger
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class Trigger(BaseModel):
@@ -14,9 +14,8 @@ class Trigger(BaseModel):
     paused: bool = False
     next_fire_time: Optional[datetime] = None
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
-        json_encoders = {
-            BaseTrigger: lambda v: str(v),
-        }
+    @field_serializer('schedule')
+    def serialize_bt(self, schedule: BaseTrigger, _info):
+        return str(bt)
