@@ -1,6 +1,6 @@
 from typing import List, Optional
 from enum import Enum
-
+from pydantic import BaseModel, ConfigDict
 from pydantic import BaseModel, Field, NonNegativeFloat
 
 
@@ -20,8 +20,7 @@ class TaskRun(BaseModel):
     status: Optional[PipelineRunStatus] = PipelineRunStatus.PENDING
     task_id: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationRule(BaseModel):
