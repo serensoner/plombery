@@ -56,11 +56,7 @@ class _Plombery:
 
 
 _app = _Plombery()
-
-
-@app.on_event("startup")
-def on_fastapi_start():
-    _app.start()
+_app.start()
 
 
 def get_app():
