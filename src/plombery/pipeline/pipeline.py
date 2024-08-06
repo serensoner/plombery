@@ -1,6 +1,6 @@
 from typing import Any, List, Optional, Type
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 
 from .task import Task
 from .trigger import Trigger
@@ -16,8 +16,7 @@ class Pipeline(BaseModel):
     triggers: List[Trigger] = Field(default_factory=list)
     save_output: bool = True
 
-    class Config:
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
     @model_validator(mode="before")
     @classmethod
